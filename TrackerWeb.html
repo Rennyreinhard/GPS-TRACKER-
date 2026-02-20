@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vehicle Tracker</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    #map { height: 100vh; width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+  const vehicleId = "{{ vehicle_id }}";  // Flask injects this
+
+  // ==========================
+  // MAP INITIALIZATION
+  // ==========================
+  const map = L.map('map', {
+    center: [0, 0],
+    zoom: 2,
+    dragging: true,
+    scrollWheelZoom: true,
+    doubleClickZoom: true
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // ==========================
+  // VEHICLE MARKER
+  // ==========================
+  const vehicleMarker = L.marker([0, 0]).addTo(map);
+
+  // ==========================
+  // TRACKING CONTROL VARIABLES
+  // ==========================
+  let followVehicle = true;   // auto-follow enabled
+  let firstLoad = true;       // zoom only first time
+
+  // Stop following when user drags map
+  map.on('dragstart', function () {
+    followVehicle = false;
+  });
+
+  // Double-click map to re-enable follow mode
+  map.on('dblclick', function () {
+    followVehicle = true;
+  });
+
+  // ==========================
+  // FETCH GPS DATA RANDOMLY
+  // ==========================
+  async function fetchVehicleData() {
+    const lat = -0.303 + Math.random() * 0.001;
+    const lon = 36.080 + Math.random() * 0.001;
+
+    vehicleMarker.setLatLng([lat, lon]);
+    map.setView([lat, lon], 15);
+}
+
+  // ==========================
+  // AUTO REFRESH
+  // ==========================
+  setInterval(fetchVehicleData, 5000);
+  fetchVehicleData();
+</script>
+
+</body>
+</html>
