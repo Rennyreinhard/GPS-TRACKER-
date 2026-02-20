@@ -5,25 +5,21 @@ import random
 SERVER_URL = "http://127.0.0.1:5000/update"
 VEHICLE_ID = "CAR_001"
 
-""" Random coordinates near some location
-##lon = 36.080025
+CENTER_LAT = -0.303099
+CENTER_LON = 36.080025
 
-# Central coordinate
-#CENTER_LAT = -0.303099
-#CENTER_LON = 36.080025
+lat = CENTER_LAT
+lon = CENTER_LON
 
-# Start at the center
-#lat = CENTER_LAT
-#lon = CENTER_LON
-#while True:
+while True:
     # Simulate small movements
-   # lat += random.uniform(-0.0005, 0.0005)
-   # lon += random.uniform(-0.0005, 0.0005)
+    lat += random.uniform(-0.0005, 0.0005)
+    lon += random.uniform(-0.0005, 0.0005)
 
-    #data = {
-      #  "vehicle_id": VEHICLE_ID,
-       # "latitude": lat,
-       # "longitude": lon
+    data = {
+        "vehicle_id": VEHICLE_ID,
+        "latitude": lat,
+        "longitude": lon
     }
 
     try:
@@ -32,8 +28,10 @@ VEHICLE_ID = "CAR_001"
     except Exception as e:
         print("Error:", e)
 
-    time.sleep(10)  # every 10 seconds"""
-import requests
+    time.sleep(10)
+
+#for desired locations
+"""import requests
 import time
 import random
 
