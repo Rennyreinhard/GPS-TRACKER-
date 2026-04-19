@@ -154,3 +154,126 @@ if __name__ == "__main__":
         db.create_all()
 
     app.run(host="127.0.0.1", port=5000, debug=True)
+$$$$
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fleet Dashboard</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 300px;
+      background: #111827;
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .vehicle {
+      background: #1f2937;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .status {
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .online {
+      color: #22c55e;
+    }
+
+    .offline {
+      color: #ef4444;
+    }
+
+    /* Map */
+    #map {
+      flex: 1;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="title">🚗 Fleet Dashboard</div>
+
+    <div class="vehicle" onclick="focusVehicle('CAR_001')">
+      CAR_001
+      <div class="status online">● Online</div>
+      <div style="font-size:12px;">Last update: just now</div>
+    </div>
+
+    <div class="vehicle" onclick="focusVehicle('CAR_002')">
+      CAR_002
+      <div class="status offline">● Offline</div>
+      <div style="font-size:12px;">Last update: 2h ago</div>
+    </div>
+  </div>
+
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+    const map = L.map('map').setView([-1, 36], 6);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19
+    }).addTo(map);
+
+    const marker = L.marker([-1, 36]).addTo(map);
+
+    let currentVehicle = "CAR_001";
+
+    async function fetchData() {
+      try {
+        const res = await fetch(`/locations/${currentVehicle}`);
+        const data = await res.json();
+
+        if (data.length > 0) {
+          const lat = data[0].lat;
+          const lon = data[0].lon;
+
+          marker.setLatLng([lat, lon]);
+          map.setView([lat, lon], 14);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    function focusVehicle(id) {
+      currentVehicle = id;
+      fetchData();
+    }
+
+    setInterval(fetchData, 3000);
+    fetchData();
+  </script>
+
+</body>
+</html>
