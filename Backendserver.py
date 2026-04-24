@@ -4,46 +4,35 @@ from flask_cors import CORS
 from flask_socketio import SocketIO
 from datetime import datetime
 
-# app = Flask(__name__)
-# CORS(app)
-
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tracking.db'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# db = SQLAlchemy(app)
-
-
 app = Flask(__name__)
 CORS(app)
 
-# 🔴 DATABASE CONFIG (MISSING IN YOUR CODE)
+# DATABASE
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tracking.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# 🔴 NOW CREATE DB
 db = SQLAlchemy(app)
-
-# 🔴 SOCKET IO
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 
+# ---------------- MODEL ----------------
 class Vehicle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     vehicle_id = db.Column(db.String(50), unique=True)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
-    timestamp = db.Column(
-        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# ---------------- ROUTES ----------------
+@app.route("/")
+def home():
+    return render_template("FleetDashboard.html")
 
 
 @app.route("/phone")
 def phone():
     return render_template("Myphonetracker.html")
-
-
-@app.route("/")
-def home():
-    return render_template("FleetDashboard.html")
 
 
 @app.route("/update", methods=["POST"])
@@ -65,25 +54,22 @@ def update_location():
         db.session.add(vehicle)
 
     db.session.commit()
-
     return jsonify({"status": "success"})
+
 
 @app.route("/vehicles")
 def get_vehicles():
-    try:
-        vehicles = Vehicle.query.all()
+    vehicles = Vehicle.query.all()
 
-        return jsonify([
-            {
-                "vehicle_id": v.vehicle_id,
-                "latitude": v.latitude,
-                "longitude": v.longitude
-            }
-            for v in vehicles
-        ])
+    return jsonify([
+        {
+            "vehicle_id": v.vehicle_id,
+            "latitude": v.latitude,
+            "longitude": v.longitude
+        }
+        for v in vehicles
+    ])
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
 @app.route("/add_test_vehicle")
 def add_test_vehicle():
@@ -91,22 +77,15 @@ def add_test_vehicle():
         vehicle_id="TEST001",
         latitude=-1.286389,
         longitude=36.817223,
-        timestamp="now"
+        timestamp=datetime.utcnow()
     )
     db.session.add(v)
     db.session.commit()
     return "Test vehicle added"
 
-        
 
-        
-if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-        
+# ---------------- RENDER ENTRY POINT ----------------
 with app.app_context():
-    db.create_all()
-    with app.app_context():
     db.create_all()
    # app.run(host="0.0.0.0", port=5000)
  #   socketio.run(
