@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fleet Dashboard</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 300px;
+      background: #111827;
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .vehicle {
+      background: #1f2937;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .status {
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .online {
+      color: #22c55e;
+    }
+
+    .offline {
+      color: #ef4444;
+    }
+
+    /* Map */
+    #map {
+      flex: 1;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="title">🚗 Fleet Dashboard</div>
+
+    <div class="vehicle" onclick="focusVehicle('CAR_001')">
+      CAR_001
+      <div class="status online">● Online</div>
+      <div style="font-size:12px;">Last update: just now</div>
+    </div>
+
+    <div class="vehicle" onclick="focusVehicle('CAR_002')">
+      CAR_002
+      <div class="status offline">● Offline</div>
+      <div style="font-size:12px;">Last update: 2h ago</div>
+    </div>
+  </div>
+
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+const map = L.map('map').setView([-1.2921, 36.8219], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+  .addTo(map);
+
+const vehicles = {};
+let selectedVehicle = null;
+
+// Smooth animation
+function animateMarker(marker, start, end, duration = 5000) {
+  const startTime = performance.now();
+
+  function animate(time) {
+    const t = Math.min((time - startTime) / duration, 1);
+
+    const lat = start.lat + (end.lat - start.lat) * t;
+    const lng = start.lng + (end.lng - start.lng) * t;
+
+    marker.setLatLng([lat, lng]);
+
+    if (t < 1) requestAnimationFrame(animate);
+  }
+
+  requestAnimationFrame(animate);
+}
+
+function updateVehicle(v) {
+  const id = v.vehicle_id;
+  const newPos = { lat: v.latitude, lng: v.longitude };
+
+  if (!vehicles[id]) {
+    const marker = L.marker([newPos.lat, newPos.lng]).addTo(map);
+
+    vehicles[id] = {
+      marker: marker,
+      lastPos: newPos
+    };
+
+    addToSidebar(id);
+    return;
+  }
+
+  const vehicle = vehicles[id];
+
+  animateMarker(vehicle.marker, vehicle.lastPos, newPos);
+
+  vehicle.lastPos = newPos;
+}
+
+function addToSidebar(id) {
+  const div = document.createElement("div");
+  div.className = "vehicle";
+  div.innerText = id;
+
+  div.onclick = () => {
+    selectedVehicle = id;
+    const v = vehicles[id];
+    map.setView([v.lastPos.lat, v.lastPos.lng], 15);
+  };
+
+  document.getElementById("vehicleList").appendChild(div);
+}
+
+async function fetchVehicles() {
+  const res = await fetch("/vehicles");
+  const data = await res.json();
+
+  data.forEach(updateVehicle);
+}
+
+setInterval(fetchVehicles, 5000);
+fetchVehicles();
+</script>
+
+</body>
+</html>
