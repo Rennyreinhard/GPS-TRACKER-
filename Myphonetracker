@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GPS Tracker</title>
+</head>
+<body>
+  <h2>Live GPS Tracker Running...</h2>
+
+  <script>
+
+    
+function sendLocation(position) {
+  //fetch("/update", {
+  fetch("https://abc123.ngrok-free.app/update", ...)
+   // method: "POST",
+   // headers: {"Content-Type": "application/json"},
+   // body: JSON.stringify({
+    //  vehicle_id: "CAR_1",
+     // latitude: position.coords.latitude,
+      //longitude: position.coords.longitude
+  //  })
+ // });
+}
+
+navigator.geolocation.watchPosition(
+  sendLocation,
+  err => console.log(err),
+  {
+    enableHighAccuracy: true
+  }
+);
+</script>
+//    setInterval(() => {
+  //    navigator.geolocation.getCurrentPosition(pos => {
+    //    //fetch("http://192.168.3.105:5000/gps", 
+      //  fetch("https://potbelly-irreplaceable-tera.ngrok-free.dev/gps", {
+        //  method: "POST",
+          //headers: {"Content-Type": "application/json"},
+          //body: JSON.stringify({
+            //car_id: "CAR_1",
+            //lat: pos.coords.latitude,
+            //lng: pos.coords.longitude
+          //})
+        //});
+      //});
+    //}, 3000);
+
+//function sendLocation(position) {
+ // fetch("https://potbelly-irreplaceable-tera.ngrok-free.dev/gps", {
+  //  method: "POST",
+    //headers: {"Content-Type": "application/json"},
+   // body: JSON.stringify({
+     // car_id: "CAR_1",
+      //lat: position.coords.latitude,
+      //lng: position.coords.longitude,
+      //time: Date.now()
+    //})
+  //});
+//}
+
+// START LIVE TRACKING
+//navigator.geolocation.watchPosition(
+  //sendLocation,
+  //err => console.log(err),
+  //{
+    //enableHighAccuracy: true,
+    //maximumAge: 0,
+    //timeout: 5000
+  //}
+//);
+//</script>
+
+
+</body>
+</html>
