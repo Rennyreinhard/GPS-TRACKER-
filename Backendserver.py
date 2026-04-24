@@ -85,7 +85,17 @@ def get_vehicles():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
+@app.route("/add_test_vehicle")
+def add_test_vehicle():
+    v = Vehicle(
+        vehicle_id="TEST001",
+        latitude=-1.286389,
+        longitude=36.817223,
+        timestamp="now"
+    )
+    db.session.add(v)
+    db.session.commit()
+    return "Test vehicle added"
 
         
 
