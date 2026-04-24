@@ -71,6 +71,7 @@ def update_location():
 
 @app.route("/vehicles")
 def get_vehicles():
+    try:
     vehicles = Vehicle.query.all()
 
     return jsonify([
