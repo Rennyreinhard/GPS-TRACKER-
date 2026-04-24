@@ -68,22 +68,26 @@ def update_location():
 
     return jsonify({"status": "success"})
 
-
 @app.route("/vehicles")
 def get_vehicles():
-try:
-    vehicles = Vehicle.query.all()
+    try:
+        vehicles = Vehicle.query.all()
 
-    return jsonify([
-        {
-            "vehicle_id": v.vehicle_id,
-            "latitude": v.latitude,
-            "longitude": v.longitude
-        }
-        for v in vehicles
-    ])
-except Exception as e:
+        return jsonify([
+            {
+                "vehicle_id": v.vehicle_id,
+                "latitude": v.latitude,
+                "longitude": v.longitude
+            }
+            for v in vehicles
+        ])
+
+    except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+
+        
 
         
 if __name__ == "__main__":
