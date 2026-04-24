@@ -81,7 +81,8 @@ def get_vehicles():
         }
         for v in vehicles
     ])
-
+except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
         
 if __name__ == "__main__":
