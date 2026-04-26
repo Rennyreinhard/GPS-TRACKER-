@@ -7,11 +7,40 @@
   <h2>Live GPS Tracker Running...</h2>
 
   <script>
+const vehicleId = "PHONE001";
+
+function sendLocation(position) {
+    fetch("https://gps-tracker-3.onrender.com/update", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            vehicle_id: vehicleId,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        })
+    });
+
+    console.log("Sent:", position.coords.latitude, position.coords.longitude);
+}
+
+// improved tracking settings
+navigator.geolocation.watchPosition(
+    sendLocation,
+    (err) => console.error("GPS error:", err),
+    {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 5000
+    }
+);
+</script>
 
     
-function sendLocation(position) {
+//function sendLocation(position) {
   //fetch("/update", {
-  fetch("https://abc123.ngrok-free.app/update", ...)
+//  fetch("https://abc123.ngrok-free.app/update", ...)
    // method: "POST",
    // headers: {"Content-Type": "application/json"},
    // body: JSON.stringify({
@@ -20,16 +49,16 @@ function sendLocation(position) {
       //longitude: position.coords.longitude
   //  })
  // });
-}
+//}
 
-navigator.geolocation.watchPosition(
-  sendLocation,
-  err => console.log(err),
-  {
-    enableHighAccuracy: true
-  }
-);
-</script>
+//navigator.geolocation.watchPosition(
+  //sendLocation,
+  //err => console.log(err),
+  //{
+//    enableHighAccuracy: true
+//  }
+//);
+//
 //    setInterval(() => {
   //    navigator.geolocation.getCurrentPosition(pos => {
     //    //fetch("http://192.168.3.105:5000/gps", 
