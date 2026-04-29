@@ -49,6 +49,7 @@ def update_location():
     else:
         vehicle = Vehicle(
             vehicle_id=data["vehicle_id"],
+             name=data.get("name", "Unknown Device"),
             latitude=data["latitude"],
             longitude=data["longitude"]
         )
