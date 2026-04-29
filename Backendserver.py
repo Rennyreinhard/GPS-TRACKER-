@@ -19,6 +19,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 class Vehicle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     vehicle_id = db.Column(db.String(50), unique=True)
+    name = db.Column(db.String(100))
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
