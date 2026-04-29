@@ -113,17 +113,20 @@ function updateVehicle(v) {
   const id = v.vehicle_id;
   const newPos = { lat: v.latitude, lng: v.longitude };
 
-  if (!vehicles[id]) {
-    const marker = L.marker([newPos.lat, newPos.lng]).addTo(map);
+ if (!vehicles[id]) {
+  const marker = L.marker([newPos.lat, newPos.lng])
+    .addTo(map)
+    .bindPopup(v.name || v.vehicle_id);
 
-    vehicles[id] = {
-      marker: marker,
-      lastPos: newPos
-    };
+  vehicles[id] = {
+    marker: marker,
+    lastPos: newPos,
+    name: v.name || v.vehicle_id
+  };
 
-    addToSidebar(id);
-    return;
-  }
+  addToSidebar(v.name || id);
+  return;
+}
 
   const vehicle = vehicles[id];
 
