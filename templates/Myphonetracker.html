@@ -16,10 +16,11 @@ function sendLocation(position) {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            vehicle_id: vehicleId,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-        })
+  vehicle_id: "PHONE001",
+  name: "Renny's Phone",   //  YOU CONTROL THIS
+  latitude: position.coords.latitude,
+  longitude: position.coords.longitude
+})
     });
 
     console.log("Sent:", position.coords.latitude, position.coords.longitude);
