@@ -117,6 +117,7 @@ function updateVehicle(v) {
   const marker = L.marker([newPos.lat, newPos.lng])
     .addTo(map)
     .bindPopup(v.name || v.vehicle_id);
+   marker.bindPopup(v.name).openPopup();
 
   vehicles[id] = {
     marker: marker,
