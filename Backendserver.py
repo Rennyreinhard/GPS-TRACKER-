@@ -39,6 +39,8 @@ def phone():
 @app.route("/update", methods=["POST"])
 def update_location():
     data = request.json
+    //ADDED THIS
+    print("GPS RECEIVED:", data)
 
     vehicle = Vehicle.query.filter_by(vehicle_id=data["vehicle_id"]).first()
 
