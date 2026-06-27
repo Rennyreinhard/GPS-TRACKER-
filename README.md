@@ -1,1 +1,2 @@
-This is a gps tracker with simulation using a development server.For real time use WSGI servers for security measures
+This is a gps tracker with simulation using a development server.For real time use WSGI servers for security measures,127.712.6.26 search engines
+In a production you should never expose your WSGI server in the internet 
